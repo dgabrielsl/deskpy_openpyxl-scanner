@@ -1,13 +1,9 @@
 import os
 import sys
-
 from PyQt6.QtWidgets import *
 from PyQt6.QtGui import *
 from PyQt6.QtCore import *
-
 from deskpy_openpyxl import Excel
-
-os.system('cls')
 
 class Main(QMainWindow):
     def __init__(self):
@@ -76,15 +72,16 @@ class Main(QMainWindow):
         self.wlayout.addLayout(g2b)
         self.wlayout.addWidget(self.launch)
 
-    # <-- to del.
-        # self.path_1.setText('C:/Users/dgabr/Downloads/2 mil expedientes/')
-        # self.path_1.setText('Y:/Archivo Electronico/II PROYECTO EXPEDIENTES/EXP EN FORMATO FINANCIERA/Grupo 1/')
-        self.path_1.setText('C:/Users/gabriel.solano/Documents/Drive/Lab/d) Filed/Reporte de excel/double/samples/')
 
-        # self.path_2.setText('C:/Users/dgabr/Downloads/')
-        self.path_2.setText('C:/Users/gabriel.solano/Downloads/')
-        self.excel_output_name.setText('opxl_report_19-10-2023')
-    # to del -->
+
+        self.path_1.setText('C:/Users/gabriel.solano/Documents/Drive/Lab/c) Samples/openpyxl - Reporte de archivos/')
+        self.path_1.setText('C:/Users/dgabr/OneDrive/Documentos/Multimoney (cloud)/Lab/c) Samples/openpyxl - Reporte de archivos/')
+        self.path_2.setText('C:/Users/dgabr/Downloads/')
+        self.excel_output_name.setText('New report from DeskPy')
+
+
+
+
 
     def filedialog(self, record_in):
         get_dirname = QFileDialog.getExistingDirectory()
@@ -95,14 +92,11 @@ class Main(QMainWindow):
     def deploy_app(self):
         try: os.remove(f'{self.path_2.text()}{self.excel_output_name.text()}.xlsx')
         except: pass
-
         self.check = os.path.exists(f'{self.path_2.text()}{self.excel_output_name.text()}.xlsx')
         if self.check == False:
             Excel.new_book(self, self.path_1, self.excel_output_name, self.path_2)
             Excel.get_tree(self)
-
         Excel.sck_folder(self)
-
         try: self.next_folder = next(self.iterator_tree)
         except StopIteration:
             self.launch.setDisabled(True)
