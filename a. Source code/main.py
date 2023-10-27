@@ -1,5 +1,6 @@
 import os
 import sys
+from datetime import datetime
 from PyQt6.QtWidgets import *
 from PyQt6.QtGui import *
 from PyQt6.QtCore import *
@@ -71,17 +72,13 @@ class Main(QMainWindow):
         self.wlayout.addLayout(g2a)
         self.wlayout.addLayout(g2b)
         self.wlayout.addWidget(self.launch)
-
-
-
-        self.path_1.setText('C:/Users/gabriel.solano/Documents/Drive/Lab/c) Samples/openpyxl - Reporte de archivos/')
-        self.path_1.setText('C:/Users/dgabr/OneDrive/Documentos/Multimoney (cloud)/Lab/c) Samples/openpyxl - Reporte de archivos/')
-        self.path_2.setText('C:/Users/dgabr/Downloads/')
-        self.excel_output_name.setText('New report from DeskPy')
-
-
-
-
+        dt = datetime.now()
+        self.time = str(dt)
+        self.time = self.time.replace(':','')
+        self.time = self.time.split('.')
+        self.time = self.time[0]
+        self.time = f'{self.time[:13]}H {self.time[13:15]}M {self.time[15:]}S'
+        self.excel_output_name.setText(f'{self.time} New report from DeskPy')
 
     def filedialog(self, record_in):
         get_dirname = QFileDialog.getExistingDirectory()
@@ -90,17 +87,22 @@ class Main(QMainWindow):
         else: record_in.setText(get_dirname)
 
     def deploy_app(self):
-        try: os.remove(f'{self.path_2.text()}{self.excel_output_name.text()}.xlsx')
-        except: pass
-        self.check = os.path.exists(f'{self.path_2.text()}{self.excel_output_name.text()}.xlsx')
-        if self.check == False:
-            Excel.new_book(self, self.path_1, self.excel_output_name, self.path_2)
-            Excel.get_tree(self)
-        Excel.sck_folder(self)
-        try: self.next_folder = next(self.iterator_tree)
-        except StopIteration:
-            self.launch.setDisabled(True)
-            self.launch.setStyleSheet('padding: 12px; margin-bottom: 30px; font-size: 14px; font-weight: 600; color: #888; background: #333; border: 4px ridge #DDD;')
+        try:
+            self.check = os.path.exists(f'{self.path_2.text()}{self.excel_output_name.text()}.xlsx')
+            if self.check == False:
+                Excel.new_book(self, self.path_1, self.excel_output_name, self.path_2)
+                Excel.get_tree(self)
+            Excel.sck_folder(self)
+            try: self.next_folder = next(self.iterator_tree)
+            except StopIteration:
+                 QMessageBox.information(self, 'DeskPy', 'El programa ha finalizado', QMessageBox.StandardButton.Close, QMessageBox.StandardButton.Close)
+                 self.launch.deleteLater()
+                 self.wlayout.addWidget(QLabel('El programa ha finalizado.'))
+                 self.wlayout.addWidget(QLabel(f'Abriendo el documento {self.path_2.text()}{self.excel_output_name.text()}.xlsx'))
+                 try: os.startfile(f'{self.path_2.text()}{self.excel_output_name.text()}.xlsx')
+                 except Exception as e: QMessageBox.warning(self, 'DeskPy', f'{e}', QMessageBox.StandardButton.Close, QMessageBox.StandardButton.Close)
+            except Exception as e: QMessageBox.warning(self, 'DeskPy', f'{e}', QMessageBox.StandardButton.Close, QMessageBox.StandardButton.Close)
+        except Exception as e: QMessageBox.warning(self, 'DeskPy', f'{e}', QMessageBox.StandardButton.Close, QMessageBox.StandardButton.Close)
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)

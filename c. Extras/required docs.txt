@@ -1,0 +1,10 @@
+análisis
+autorización cic (o si está CIC 00-0000 no reportar auth cic como faltante)
+cic
+cicac
+contrato
+declaración
+id
+kyc
+pagaré
+orden || origen
